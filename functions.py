@@ -42,6 +42,17 @@ plt.plot(x, y)
 plt.show()
 
 
+# mse mean squared error, loss function
+def mse(y, y_hat, derivate=False):
+    if derivate:
+        return 2 * (y_hat - y) / y.size
+    return np.mean((y - y_hat)**2)
+
+real = np.array([1, 2, 3, 4, 5])
+prediction = np.array([1, 2, 3, 4, 3])
+print(mse(real, prediction)) # 0.8
+
+
 
 
 
