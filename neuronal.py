@@ -1,4 +1,3 @@
-import numpy as np
 from keras.layers import Dense, Activation, Flatten
 from keras.models import Sequential
 from keras.datasets import mnist

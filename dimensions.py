@@ -18,15 +18,22 @@ print("tensor dim: ", tensor.ndim) # 3
 print("tensor shape: ", tensor.shape) # (2,2,3)
 
 #reshape a tensor
-toReshape = np.array([[0,1],
+tensor1 = np.array([[0,1],
                     [2,3],
                     [4,5],
                     [6,7],
                     ])
-print(toReshape.shape) # (4,2)
+print(tensor1.shape) # (4,2)
 
-toReshape = toReshape.reshape((8,1))
-print(toReshape.shape) # (8,1)
+toReshape = tensor1.reshape((8,1))
+print(toReshape) # [[0] [1] [2] [3] [4] [5] [6] [7]]
+toReshape = tensor1.reshape((2,4))
+print(toReshape) # [[0 1 2 3] [4 5 6 7]]
+
+
+# transpose a tensor
+tensor2 = np.transpose(tensor1)
+print(tensor2) # [[0 2 4 6] [1 3 5 7]]
 
 
 
