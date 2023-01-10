@@ -2,8 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # sigmoid function, continuous
-def sigmoid(x):
-    return 1/(1+np.exp(-x))
+def sigmoid(x, derivate=False):
+    if derivate:
+        return np.exp(-x)/((1+np.exp(-x))**2)
+    else:
+        return 1/(1+np.exp(-x))
 
 x = np.linspace(-10, 10, 100)
 y = sigmoid(x)
@@ -24,8 +27,13 @@ plt.show()
 
 
 # ReLU function, continuous
-def relu(x):
-    return np.piecewise(x, [x < 0.0, x >= 0.0], [0, lambda x: x])
+def relu(x, derivate=False):
+    if derivate:
+        x[x<=0] = 0
+        x[x>0] = 1
+        return x
+    else:
+        return np.piecewise(x, [x < 0.0, x >= 0.0], [0, lambda x: x])
 
 x = np.linspace(-10, 10, 100)
 y = relu(x)
