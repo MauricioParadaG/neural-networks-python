@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def sigmoid(x, derivate=False):
     if derivate:
-        return np.exp(-x)/((1+np.exp(-x))**2)
+        return np.exp(-x)/((np.exp(-x) +1)**2)
     else:
         return 1/(1+np.exp(-x))
 
@@ -20,8 +20,9 @@ def relu(x, derivate=False):
 # mse mean squared error, loss function
 def mse(y, y_hat, derivate=False):
     if derivate:
-        return 2 * (y_hat - y)
-    return np.mean((y - y_hat)**2)
+        return (y_hat - y)
+    else:
+        return np.mean((y - y_hat)**2)
 
 
 def run ():

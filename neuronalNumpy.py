@@ -24,59 +24,83 @@ def initialize_parameters(layers_dims):
         parameters['b' + str(l+1)] = (np.random.rand(1, layers_dims[l+1]) * 2) - 1
     return parameters
 
-layers_dims = [2, 4, 8, 1] # 2 inputs, 4 neurons, 8 neurons, 1 output
+""" layers_dims = [2, 4, 8, 1] # 2 inputs, 4 neurons, 8 neurons, 1 output
 parameters = initialize_parameters(layers_dims)
 # print(parameters)
 
 print(parameters['W1'].shape) # (2, 4)
 
-np.matmul(x_data, parameters['W1']) # (1000, 4)
+np.matmul(x_data, parameters['W1']) # (1000, 4) """
 
 
-def train (x_data, learning_rate, parameters, training = True):
+def train(x_data, learning_rate, parameters, training=True):
 # Forward propagation
-  parameters['A0'] = x_data
 
-  parameters['Z1'] = np.matmul(parameters['A0'], parameters['W1']) + parameters['b1']
-  parameters['A1'] = relu(parameters['Z1'])
+    parameters['A0'] = x_data
+        
+    parameters['Z1'] = np.matmul(parameters['A0'],parameters['W1']) + parameters['b1']
+    parameters['A1'] = relu(parameters['Z1'])
+    
+    parameters['Z2'] = np.matmul(parameters['A1'],parameters['W2']) + parameters['b2']
+    parameters['A2'] = relu(parameters['Z2'])
+       
+    parameters['Z3'] = np.matmul(parameters['A2'],parameters['W3']) + parameters['b3']
+    parameters['A3'] = sigmoid(parameters['Z3'])
+  
+    output = parameters['A3']
+    
+    if training:
+    # Backpropagation
+    
+        parameters['dZ3'] =  mse(y_label,output,True) * sigmoid(parameters['A3'],True)
+        parameters['dW3'] = np.matmul(parameters['A2'].T,parameters['dZ3'])
+        
+        parameters['dZ2'] = np.matmul(parameters['dZ3'],parameters['W3'].T) * relu(parameters['A2'],True)
+        parameters['dW2'] = np.matmul(parameters['A1'].T,parameters['dZ2'])
+        
+        parameters['dZ1'] = np.matmul(parameters['dZ2'],parameters['W2'].T) * relu(parameters['A1'],True)
+        parameters['dW1'] = np.matmul(parameters['A0'].T,parameters['dZ1'])
+
+        
+         # Gradient descent - update W and b
+           
+        parameters['W3'] = parameters['W3'] - parameters['dW3'] * learning_rate
+        parameters['b3'] = parameters['b3'] - (np.mean(parameters['dZ3'],axis=0, keepdims=True)) * learning_rate
+        
+        parameters['W2'] = parameters['W2'] - parameters['dW2'] * learning_rate
+        parameters['b2'] = parameters['b2'] - (np.mean(parameters['dZ2'],axis=0, keepdims=True)) * learning_rate
+        
+        parameters['W1'] = parameters['W1'] -parameters['dW1'] * learning_rate
+        parameters['b1'] = parameters['b1'] - (np.mean(parameters['dZ1'],axis=0, keepdims=True)) * learning_rate
+    
+    return output
+
+  # Train neuronal network
+
+layers_dims = [2, 4, 8, 1] # 2 inputs, 4 neurons, 8 neurons, 1 output
+parameters = initialize_parameters(layers_dims)
+
+errors = []
+for i in range(50000):
+    output = train(x_data, 0.001, parameters)
+    if i % 10000 == 0:
+        print(mse(y_label,output))
+        errors.append(mse(y_label,output))
+
+plt.plot(errors)
+plt.show()
 
 
-  parameters['Z2'] = np.matmul(parameters['A1'], parameters['W2']) + parameters['b2']
-  parameters['A2'] = relu(parameters['Z2'])
 
-  parameters['Z3'] = np.matmul(parameters['A2'], parameters['W3']) + parameters['b3']
-  parameters['A3'] = sigmoid(parameters['Z3'])
 
-  print(parameters['A3'].shape) # (1000, 1)
 
-  output = parameters['A3']
-  #print (output)
 
-  if training:
-    # Back propagation
-    parameters['dZ3'] = mse(y_label, output, True) * sigmoid(parameters['Z3'], True)
-    parameters['dW3'] = np.matmul(parameters['A2'].T, parameters['dZ3'])
 
-    parameters['dZ2'] = np.matmul(parameters['dZ3'], parameters['W3'].T) * relu(parameters['Z2'], True)
-    parameters['dW2'] = np.matmul(parameters['A1'].T, parameters['dZ2'])
 
-    parameters['dZ1'] = np.matmul(parameters['dZ2'], parameters['W2'].T) * relu(parameters['Z1'], True)
-    parameters['dW1'] = np.matmul(parameters['A0'].T, parameters['dZ1'])
 
-    # Gradient descent - update W and b
-    parameters['W3'] = parameters['W3'] - learning_rate * parameters['dW3']
-    parameters['b3'] = parameters['b3'] - learning_rate * parameters['dZ3']
 
-    parameters['W2'] = parameters['W2'] - learning_rate * parameters['dW2']
-    parameters['b2'] = parameters['b2'] - learning_rate * parameters['dZ2']
 
-    parameters['W1'] = parameters['W1'] - learning_rate * parameters['dW1']
-    parameters['b1'] = parameters['b1'] - learning_rate * parameters['dZ1']
 
-  return output
 
-output = train(x_data, 0.1, parameters = parameters, training = True)
 
-print (output)
-print (output.shape) # (1000, 1)
 
