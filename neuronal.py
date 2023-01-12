@@ -1,4 +1,4 @@
-from keras.layers import Dense, Activation, Flatten
+from keras.layers import Dense
 from keras.models import Sequential
 from keras.datasets import mnist
 from keras.utils import to_categorical
