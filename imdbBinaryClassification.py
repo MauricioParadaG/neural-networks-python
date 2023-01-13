@@ -45,7 +45,7 @@ partial_y_train = y_train[10000:]
 
 history = model.fit(
  partial_x_train, partial_y_train,
- epochs=4,
+ epochs=20,
  batch_size=512,
  validation_data=(x_val, y_val))
 
@@ -68,6 +68,111 @@ plt.show()
 results = model.evaluate(x_test, y_test)
 print(results) # [0.2896219491958618, 0.883400022983551]
 
+# Less complex model variant
+model2 = Sequential()
+model2.add(Dense(4, activation='relu', input_shape=(10000,)))
+model2.add(Dense(4, activation='relu'))
+model2.add(Dense(1, activation='sigmoid'))
+
+model2.compile(
+    optimizer='rmsprop',
+    loss='binary_crossentropy',
+    metrics=['accuracy'])
+
+history2 = model2.fit(
+    partial_x_train, partial_y_train,
+    epochs=20,
+    batch_size=512,
+    validation_data=(x_val, y_val))
+
+history_dict2 = history2.history
+
+loss_values2 = history_dict2['loss']
+val_loss_values = history_dict['val_loss']
+val_loss_values2 = history_dict2['val_loss']
+
+epochs = range(1, len(loss_values2) + 1)
+
+plt.plot(epochs, val_loss_values2, 'o', label='Smaller model')
+plt.plot(epochs, val_loss_values, '--', label='Original model')
+plt.title('Validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
  
+
+
+# Regularization model
+
+from keras import regularizers
+
+model3 = Sequential()
+model3.add(Dense(16, kernel_regularizer=regularizers.l2(0.001), activation='relu', input_shape=(10000,)))
+model3.add(Dense(16, kernel_regularizer=regularizers.l2(0.001), activation='relu'))
+model3.add(Dense(1, activation='sigmoid'))
+
+model3.compile(
+    optimizer='rmsprop',
+    loss='binary_crossentropy',
+    metrics=['accuracy'])
+
+history3 = model3.fit(
+    partial_x_train, partial_y_train,
+    epochs=20,
+    batch_size=512,
+    validation_data=(x_val, y_val))
+
+history_dict3 = history3.history
+
+loss_values3 = history_dict3['loss']
+val_loss_values3 = history_dict3['val_loss']
+
+epochs = range(1, len(loss_values3) + 1)
+
+plt.plot(epochs, val_loss_values3, 'o', label='Regularized model')
+plt.plot(epochs, val_loss_values, '--', label='Original model')
+plt.title('Validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+
+
+# Dropout model
+from keras.layers import Dropout
+
+model4 = Sequential()
+model4.add(Dense(4, activation='relu', input_shape=(10000,)))
+model4.add(Dropout(0.5))
+model4.add(Dense(4, activation='relu'))
+model4.add(Dropout(0.5))
+model4.add(Dense(1, activation='sigmoid'))
+
+model4.compile(
+    optimizer='rmsprop',
+    loss='binary_crossentropy',
+    metrics=['accuracy'])
+
+history4 = model4.fit(
+    partial_x_train, partial_y_train,
+    epochs=20,
+    batch_size=512,
+    validation_data=(x_val, y_val))
+
+history_dict4 = history4.history
+
+loss_values4 = history_dict4['loss']
+val_loss_values4 = history_dict4['val_loss']
+
+epochs = range(1, len(loss_values4) + 1)
+
+plt.plot(epochs, val_loss_values4, 'o', label='Dropout model')
+plt.plot(epochs, val_loss_values, '--', label='Original model')
+plt.title('Validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
 
 
